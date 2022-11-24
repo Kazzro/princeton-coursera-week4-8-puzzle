@@ -1,8 +1,5 @@
 import edu.princeton.cs.algs4.Stack;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 public class Board {
     private class zeroPosition{
         public int row;
