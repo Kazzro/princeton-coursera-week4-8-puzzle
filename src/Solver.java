@@ -4,22 +4,22 @@ import java.util.Comparator;
 import java.util.Stack;
 
 public class Solver {
-    private class SearchSolution {
+    private class SearchNode {
         private Board board;
         private int moves;
-        private SearchSolution previous;
+        private SearchNode previous;
 
-        private SearchSolution(Board board, int moves, SearchSolution previous) {
+        private SearchNode(Board board, int moves, SearchNode previous) {
             this.board = board;
             this.moves = moves;
             this.previous = previous;
         }
     }
 
-    private class SearchSolutionOrder implements Comparator<SearchSolution> {
+    private class SearchSolutionOrder implements Comparator<SearchNode> {
 
         @Override
-        public int compare(SearchSolution solutionNode1, SearchSolution solutionNode2) {
+        public int compare(SearchNode solutionNode1, SearchNode solutionNode2) {
             int sN1 = solutionNode1.board.manhattan();
             int sN2 = solutionNode2.board.manhattan();
             int sN1Prio = solutionNode1.moves + sN1;
@@ -51,9 +51,35 @@ public class Solver {
             throw new IllegalArgumentException();
         }
 
-        MinPQ<SearchSolution> searcher = new MinPQ<>(new SearchSolutionOrder());
+        MinPQ<SearchNode> searcher = new MinPQ<>(new SearchSolutionOrder());
 
-        SearchSolution currentSearch = new SearchSolution(initial, 0, null);
+        SearchNode currentSearchNode = new SearchNode(initial, 0, null);
+        boolean alive = true;
+
+
+        while (alive) {
+
+            if (currentSearchNode.board.isGoal()) {
+
+                while(currentSearchNode.previous != null) {
+                    solutions.push(currentSearchNode.board);
+                    currentSearchNode = currentSearchNode.previous;
+                }
+                solutions.push(initial);
+                alive = false;
+            }
+
+            for (Board neighbor : currentSearchNode.board.neighbors()) {
+
+                if (currentSearchNode.previous == null || !currentSearchNode.previous.board.equals(neighbor)) {
+
+                    searcher.insert(new SearchNode(neighbor, currentSearchNode.moves + 1, currentSearchNode));
+                }
+
+            }
+
+        }
+
     }
 
     // is the initial board solvable? (see below)
