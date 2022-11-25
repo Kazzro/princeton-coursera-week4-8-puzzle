@@ -1,38 +1,43 @@
 import edu.princeton.cs.algs4.Stack;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
-    private class zeroPosition{
+    private class zeroPosition {
         public int row;
         public int col;
         private int n;
 
-        public zeroPosition(int row, int col, int n){
+        public zeroPosition(int row, int col, int n) {
             this.row = row;
             this.col = col;
-            this.n =n;
+            this.n = n;
         }
 
-        public void up(){
+        public void up() {
             if (row > 0) {
                 row = row--;
             }
         }
-        public void left(){
-            if (col > 0){
+
+        public void left() {
+            if (col > 0) {
                 col--;
             }
         }
-        public void down(){
-            if (row < n-1){
+
+        public void down() {
+            if (row < n - 1) {
                 row++;
             }
         }
-        public void right(){
-            if (col < n-1){
+
+        public void right() {
+            if (col < n - 1) {
                 col++;
             }
         }
     }
+
     private zeroPosition pos;
     private int n;
     private int[][] tiles;
@@ -46,8 +51,8 @@ public class Board {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (tiles[i][j] == 0){
-                    pos = new zeroPosition(i,j,n);
+                if (tiles[i][j] == 0) {
+                    pos = new zeroPosition(i, j, n);
                 }
             }
         }
@@ -82,6 +87,7 @@ public class Board {
         }
         return counter;
     }
+
     // Helper Method to figure out wtf it should be
     private int correspondingNumber(int row, int col) {
         if (row == dimension() - 1 && col == dimension() - 1) {
@@ -91,15 +97,15 @@ public class Board {
     }
 
     // sum of Manhattan distances between tiles and goal
-    public int manhattan(){
+    public int manhattan() {
         int counter = 0;
         for (int i = 0; i < dimension(); i++) {
             for (int j = 0; j < dimension(); j++) {
-                if (tiles[i][j] != correspondingNumber(i,j) && tiles[i][j] != 0){
-                    for (int k = 0; k < dimension() ; k++) {
-                        for (int l = 0; l < dimension() ; l++) {
-                            if(tiles[k][l] == correspondingNumber(i,j)){
-                                counter += (Math.abs(k-i)+ Math.abs(l-j));
+                if (tiles[i][j] != correspondingNumber(i, j) && tiles[i][j] != 0) {
+                    for (int k = 0; k < dimension(); k++) {
+                        for (int l = 0; l < dimension(); l++) {
+                            if (tiles[k][l] == correspondingNumber(i, j)) {
+                                counter += (Math.abs(k - i) + Math.abs(l - j));
                             }
                         }
                     }
@@ -110,11 +116,11 @@ public class Board {
     }
 
     // is this board the goal board?
-    public boolean isGoal(){
+    public boolean isGoal() {
         boolean isGoal = true;
         for (int i = 0; i < dimension(); i++) {
             for (int j = 0; j < dimension(); j++) {
-                if(tiles[i][j] != correspondingNumber(i,j)){
+                if (tiles[i][j] != correspondingNumber(i, j)) {
                     isGoal = false;
                 }
             }
@@ -123,22 +129,22 @@ public class Board {
     }
 
     // does this board equal y?
-    public boolean equals(Object y){
-        if(y == this){
+    public boolean equals(Object y) {
+        if (y == this) {
             return true;
         }
-        if(this.getClass() != y.getClass()){
+        if (this.getClass() != y.getClass()) {
             return false;
         }
         Board that = (Board) y;
 
-        if(this.dimension() != that.dimension()){
+        if (this.dimension() != that.dimension()) {
             return false;
         }
 
-        for (int i = 0; i < this.dimension() ; i++) {
-            for (int j = 0; j < this. dimension() ; j++) {
-                if (this.tiles[i][j] != that.tiles[i][j]){
+        for (int i = 0; i < this.dimension(); i++) {
+            for (int j = 0; j < this.dimension(); j++) {
+                if (this.tiles[i][j] != that.tiles[i][j]) {
                     return false;
                 }
             }
@@ -148,86 +154,120 @@ public class Board {
     }
 
     // all neighboring boards
-    public Iterable<Board> neighbors() {                 //TODO so much todo...
+    public Iterable<Board> neighbors() {
         Stack<Board> neighbors = new Stack<Board>();
 
-        if (pos.col > 0){
+        if (pos.col > 0) {
             neighbors.push(this.left());
         }
-        if (pos.col < dimension()-1){
+        if (pos.col < dimension() - 1) {
             neighbors.push(this.right());
         }
-        if (pos.row > 0){
+        if (pos.row > 0) {
             neighbors.push(this.up());
         }
-        if(pos.row < dimension()-1){
+        if (pos.row < dimension() - 1) {
             neighbors.push(this.down());
         }
 
         return neighbors;
     }
 
-    private Board left(){
-        if(pos.col <= 0){
+    private Board left() {
+        if (pos.col <= 0) {
             return null;
         }
 
-        int[][] leftTile =  tiles.clone();
+        int[][] leftTile = tiles.clone();
         Board left = new Board(leftTile);
 
-        left.tiles[pos.row][pos.col] = left.tiles[pos.row][pos.col-1];
-        left.tiles[pos.row][pos.col-1] =0;
+        left.tiles[pos.row][pos.col] = left.tiles[pos.row][pos.col - 1];
+        left.tiles[pos.row][pos.col - 1] = 0;
         left.pos.left();
         return left;
     }
-    private Board right (){
-        if (pos.col >= dimension()-1){
+
+    private Board right() {
+        if (pos.col >= dimension() - 1) {
             return null;
         }
 
         int[][] rightTile = tiles.clone();
         Board right = new Board(rightTile);
 
-        right.tiles[pos.row][pos.col] = right.tiles[pos.row][pos.col+1];
-        right.tiles[pos.row][pos.col+1] =0;
+        right.tiles[pos.row][pos.col] = right.tiles[pos.row][pos.col + 1];
+        right.tiles[pos.row][pos.col + 1] = 0;
         right.pos.right();
         return right;
     }
-    private Board up(){
-        if (pos.row <= 0){
+
+    private Board up() {
+        if (pos.row <= 0) {
             return null;
         }
 
         int[][] upTile = tiles.clone();
-        Board up = new Board (upTile);
+        Board up = new Board(upTile);
 
-        up.tiles[pos.row-1][pos.col] = up.tiles[pos.row][pos.col];
-        up.tiles[pos.row-1][pos.col] =0;
+        up.tiles[pos.row - 1][pos.col] = up.tiles[pos.row][pos.col];
+        up.tiles[pos.row - 1][pos.col] = 0;
         up.pos.up();
         return up;
     }
 
-    private Board down(){
-        if (pos.row >= dimension()-1){
+    private Board down() {
+        if (pos.row >= dimension() - 1) {
             return null;
         }
 
         int[][] downTile = tiles.clone();
-        Board down = new Board (downTile);
+        Board down = new Board(downTile);
 
-        down.tiles[pos.row+1][pos.col] = down.tiles[pos.row][pos.col];
-        down.tiles[pos.row+1][pos.col] =0;
+        down.tiles[pos.row + 1][pos.col] = down.tiles[pos.row][pos.col];
+        down.tiles[pos.row + 1][pos.col] = 0;
         down.pos.down();
         return down;
     }
 
     // a board that is obtained by exchanging any pair of tiles
-    public Board twin(){                                //Todo what todo...
-
+    public Board twin() {
+        int choice = StdRandom.uniformInt(4);
+        switch (choice) {
+            case 0: {
+                if (pos.row > 0) {
+                    return this.up();
+                } else {
+                    return twin();
+                }
+            }
+            case 1: {
+                if (pos.col > 0) {
+                    return this.left();
+                } else {
+                    return twin();
+                }
+            }
+            case 2: {
+                if (pos.row < dimension() - 1) {
+                    return this.down();
+                } else {
+                    return twin();
+                }
+            }
+            case 3: {
+                if (pos.col < dimension() - 1) {
+                    return this.right();
+                } else {
+                    return twin();
+                }
+            }
+        }
+        return this;
     }
 
+
     // unit testing (not graded)
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
     }
 
